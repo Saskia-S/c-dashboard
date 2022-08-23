@@ -1,44 +1,15 @@
 import axios from "axios";
-import moment from "moment";
-import {useEffect, useState} from "react";
-import { LineChart, Line, Tooltip, CartesianGrid, ResponsiveContainer,  XAxis, YAxis, Legend} from 'recharts';
 
-export default function HistoryCases(props) {
-    let days = 0;
-    if(props) {
-        days = props.days
-    }
-    const [historyCases, setHistoryCases] = useState(null);
+const getHistCases = async function(days) {
+    const req = axios.get(`https://api.corona-zahlen.org/germany/history/cases/${days}`); /* set days in other component to get data of specific number of days only */
+    const res = await req;
+    return await res.data.data;
+}
 
-    const getHistoryCases = async () => {
-        const req = axios.get(`https://api.corona-zahlen.org/germany/history/cases/${days}`); /* set props.days in other component to get data of specific number of days only */
-        const res = await req;
-        setHistoryCases(res.data.data);
-        return(historyCases);
-    }
-
-    useEffect(() => {
-        getHistoryCases();
-    }, [days])
-
-    function tickFormatter(tickItem) {
-        return moment(tickItem).format('DD.MM');
-    }
-
-    const CustomTooltip = ({ active, payload, label }) => {
-        if (active && payload && payload.length) {
-            return (
-                <div className="custom-tooltip">
-                    <p className="label">{`${moment(label).format('DD.MM.YY')} : ${payload[0].value} cases`}</p>
-                </div>
-            );
-        }
-
-        return null;
-    };
+export { getHistCases };
 
 
-    return(
+    /*return(
         <div className="container">
             <ResponsiveContainer width="100%" height={300}>
                 <LineChart width={1300}
@@ -63,5 +34,4 @@ export default function HistoryCases(props) {
                 </LineChart>
             </ResponsiveContainer>
         </div>
-    );
-}
+    );*/
